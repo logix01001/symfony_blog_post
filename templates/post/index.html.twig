@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PostController!{% endblock %}
+
+{% block body %}
+ <div class="container">
+        <h2>Create POST</h2>
+        
+        {{ form_start(form) }}
+        <div class="form_group">
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.title, {'attr': {'class': 'form-control'}}) }}
+            </div>
+        </div>
+        <div class="form_group">
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.body) }}
+            </div>
+        </div>
+        <div class="form_group">
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.submit, {'attr': {'class': 'btn btn-primary mb-3'}}) }}
+            </div>
+        </div>
+        
+        {{ form_end(form) }}
+        <hr>
+        <h2></h2>
+        {% if commentform is defined %}
+        
+            {{ form(commentform) }}
+
+        {% endif %}
+
+        {% if comments is defined %}
+        <div class="row">
+            <div class="col lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        Comments..
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for comment in comments %}
+                            <li class="list-group-item"> {{ comment.getCommentPost() }} </li>
+                        {% endfor %} 
+                    </ul>
+                </div>
+            </div>
+        </div> 
+        {% endif %}     
+    </div>
+    
+{% endblock %}

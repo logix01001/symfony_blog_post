@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello RegistrationController!{% endblock %}
+
+{% block body %}
+
+
+    <div class="container">
+        <h2>Registration Form</h2>
+        
+        {{ form_start(form) }}
+        <div class="form_group">
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
+            </div>
+        </div>
+        <div class="form_group">
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+            </div>
+        </div>
+        <div class="form_group">
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.password.first, {'attr': {'class': 'form-control'}}) }}
+            </div>
+        </div>
+        <div class="form_group">
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.password.second, {'attr': {'class': 'form-control'}}) }}
+            </div>
+        </div>
+        <div class="form_group">
+            <div class="col-md-12 mb-3">
+                {{ form_row(form.submit, {'attr': {'class': 'btn btn-primary mb-3'}}) }}
+            </div>
+        </div>
+        
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}

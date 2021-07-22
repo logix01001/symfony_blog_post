@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PagesController!{% endblock %}
+
+{% block body %}
+      
+        
+
+    {% for message in app.flashes('notice') %}
+        <div class="row">
+            <div class="col-lg-12">
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+            </div>
+        </div>
+    {% endfor %}
+
+
+<AmpContent>
+{% if app.user != null %}
+
+        <div class="container" style="margin-top: 20px">
+            {% for post in posts %}
+
+            <div class="row">
+                <div class="col col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            {{ post.title }} 
+                           
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    {{ post.body }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="float-right">
+                                        <small> Posted by {{ post.user.getEmail()}}</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col col-md-6 offset-6">
+                                        <a href="{{ path('post.index', {'id': post.getId() })}}"><button class="float-right btn btn-sm btn-danger">Delete</button></a>
+                                        &nbsp;
+                                        <a href="{{ path('post.index', {'id': post.getId() })}}"><button class="float-right btn btn-sm btn-warning">Edit</button></a>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b>8 Comments...</b> <button class="btn btn-info float-right btn-sm"> Show comments</button></li>
+                        </ul>
+                        <ul class="list-group list-group-flush">
+                            <form action="{{ path('comment.create') }}" method="POST">
+                            </form>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="divider"></div>
+
+            {% endfor %}
+
+            <div class="row">
+                <div class="col col-md-6 mb-3">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {# <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            </li> #}
+                            {% for i in 1..pagesCount %}
+
+                                {% if page == i %}
+                                    <li class="page-item active"> <span class="page-link">{{ i }} </span> </li>
+                                {% else %}
+                                    <li class="page-item"> <a class="page-link" href="{{ path('index', {'page' : i}) }}"> {{  i }} </a> </li>
+                                {% endif %}
+
+                            {% endfor %}
+                            {# <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                            </li> #}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+{% else %}
+Need to login first
+{% endif %}
+</NonAmpContent>
+
+{% endblock %}
