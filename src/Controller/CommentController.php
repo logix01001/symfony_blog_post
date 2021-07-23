@@ -45,6 +45,8 @@ class CommentController extends AbstractController
 
             $em->persist($comment);
             $em->flush();
+
+          return  $this->redirect($request->server->get('HTTP_REFERER'));
         }
     }
 }

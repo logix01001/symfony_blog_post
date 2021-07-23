@@ -27,7 +27,7 @@
                 <div class="col col-md-6 mb-3">
                     <div class="card">
                         <div class="card-header">
-                            {{ post.title }} 
+                           <a href="{{  path('post.show', {'id': post.getId() }) }}"> {{ post.getTitle() }} </a>
                            
                         </div>
                         <div class="card-body">
@@ -39,9 +39,7 @@
 
                             <div class="row">
                                 <div class="col">
-                                    <div class="float-right">
-                                        <small> Posted by {{ post.user.getEmail()}}</small>
-                                    </div>
+                                    
                                 </div>
                             </div>
 
@@ -55,7 +53,11 @@
                             
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><b>8 Comments...</b> <button class="btn btn-info float-right btn-sm"> Show comments</button></li>
+                            <li class="list-group-item"> <i class="fa fa-comments"></i> <b>{{ post.getComments()|length }}</b> Comment(s)
+                                <div class="float-right">
+                                    <small> Posted by {{ post.user.getEmail()}} ({{ post.getUser().getName()  }})</small>
+                                </div>
+                            </li>
                         </ul>
                         <ul class="list-group list-group-flush">
                             <form action="{{ path('comment.create') }}" method="POST">

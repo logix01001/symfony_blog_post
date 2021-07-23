@@ -8,11 +8,14 @@ use App\Form\CommentType;
 use App\Form\PostFormType;
 use App\Traits\RedirectMain;
 use App\Repository\PostRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 
 /**
@@ -22,13 +25,27 @@ class PostController extends AbstractController
 {
     
     use RedirectMain;
+
+    /**
+    * @Route("/test/{id}", name="test")
+    * 
+    */
+    public function test(Post $post)
+    {   
+        if($post == null){
+            throw 'No POST FOUND';
+        }
+        return dd($post);
+    }
+
     /**
     * @Route("/", name="index")
+    * 
     */
     public function index(Request $request, PostRepository $postRepo): Response
     {
       
-
+        
         if($request->get('id')){
             $id = $request->get('id');
 
@@ -44,20 +61,12 @@ class PostController extends AbstractController
                 ]
             );
 
-            $commentform = $this->createForm(
-                CommentType::class,
-                null,
-                [
-                    'method' => 'POST',
-                    'action' => $this->generateUrl('comment.create', ['postid' =>  $id])
-                ]
-            );
+           
             return $this->render('post/index.html.twig', [
                 'controller_name' => 'PostController',
                 'form' => $form->createView(),
                 'post' => $post,
-                'comments' => $comments,
-                'commentform' => $commentform->createView(),
+                'comments' => $comments
             ]);
 
 
@@ -82,6 +91,40 @@ class PostController extends AbstractController
     }
 
 
+    /**
+    * @Route("/show/{id}", name="show")
+    * 
+    */
+    public function show(Post $post): Response
+    {
+        //use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+        //PostRepository $postRepo
+        //$post = $postRepo->find($id);
+
+        
+        if($post != null){
+
+            $comments = $post->getComments();
+
+            $commentform = $this->createForm(
+                CommentType::class,
+                null,
+                [
+                    'method' => 'POST',
+                    'action' => $this->generateUrl('comment.create', ['postid' =>  $post->getId() ])
+                ]
+            );
+            return $this->render('post/show.html.twig',
+            [
+                'post' => $post,
+                'comments' => $comments,
+                'commentform' => $commentform->createView()
+            ]);
+        }
+        
+    }
+
+
 
 
 
@@ -101,16 +144,13 @@ class PostController extends AbstractController
         $form->handleRequest($request);
        
         if($form->isSubmitted() && $form->isValid()){
-           
-            $em = $this->getDoctrine()->getManager();
 
+            $em = $this->getDoctrine()->getManager();
 
             $post->setUser($this->getUser());
 
             $post->setCreatedAt(new \DateTime('now'));
 
-
-           
             $em->persist($post);
 
             $em->flush();
@@ -127,12 +167,14 @@ class PostController extends AbstractController
 
     /**
     * @Route("/update/{id}", name="update", methods={"PUT"})
+    * 
     */
-    public function update(Request $request, PostRepository $postRepo,int $id)
+    public function update(Request $request,post $post)
     {
-      
+        // PostRepository $postRepo
+        // $post = $postRepo->find($id);
+
         $em = $this->getDoctrine()->getManager();
-        $post = $postRepo->find($id);
         $form = $this->createForm(
             PostFormType::class,
             $post,
@@ -161,13 +203,15 @@ class PostController extends AbstractController
 
     /**
     * @Route("/delete/{id}", name="delete", methods={"DELETE"})
+    * 
     */
-    public function destroy(PostRepository $postRepo,int $id)
+    public function destroy(Post $post)
     {
       
         $em = $this->getDoctrine()->getManager();
 
-        $post = $postRepo->find($id);
+        //PostRepository $postRepo
+        //$post = $postRepo->find($id);
       
         if($post != null){
 
