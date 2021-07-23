@@ -16,7 +16,7 @@ class PagesController extends AbstractController
     public function index(PostRepository $postsRepo, Request $request): Response
     {   
         $page = $request->get('page') ? $request->get('page') : 1;
-        $pageSize = $request->get('page-size') ? $request->get('page-size') : 1;
+        $pageSize = $request->get('page-size') ? $request->get('page-size') : 5;
 
         $posts = $postsRepo->getPostByPages($page, $pageSize);
 

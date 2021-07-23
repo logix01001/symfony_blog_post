@@ -38,7 +38,14 @@ class Post
 
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post")
+     * @var Comment[]|Collection
+     * 
+     * @ORM\OneToMany(
+     *      targetEntity=Comment::class, 
+     *      mappedBy="post",
+     *      orphanRemoval=true,
+     *      cascade={"persist"}
+     * )
      */
     private $comments;
 

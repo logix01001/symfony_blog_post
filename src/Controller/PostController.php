@@ -6,12 +6,14 @@ use App\Entity\Post;
 use App\Entity\User;
 use App\Form\CommentType;
 use App\Form\PostFormType;
-use App\Repository\PostRepository;
 use App\Traits\RedirectMain;
+use App\Repository\PostRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+
 
 /**
  * @Route("/post", name="post.")
@@ -25,8 +27,7 @@ class PostController extends AbstractController
     */
     public function index(Request $request, PostRepository $postRepo): Response
     {
-        
-        
+      
 
         if($request->get('id')){
             $id = $request->get('id');
@@ -151,6 +152,32 @@ class PostController extends AbstractController
             $this->addFlash(
                 'notice',
                 'Post successfully updated.'
+            );
+
+            return $this->redirectIndex();
+        }
+    }
+
+
+    /**
+    * @Route("/delete/{id}", name="delete", methods={"DELETE"})
+    */
+    public function destroy(PostRepository $postRepo,int $id)
+    {
+      
+        $em = $this->getDoctrine()->getManager();
+
+        $post = $postRepo->find($id);
+      
+        if($post != null){
+
+            $em->remove( $post );
+
+            $em->flush();
+
+            $this->addFlash(
+                'notice',
+                'Post successfully deleted.'
             );
 
             return $this->redirectIndex();
