@@ -26,6 +26,7 @@ class PostController extends AbstractController
     public function index(Request $request, PostRepository $postRepo): Response
     {
         
+        
 
         if($request->get('id')){
             $id = $request->get('id');
