@@ -124,10 +124,6 @@ class PostController extends AbstractController
         
     }
 
-
-
-
-
     /**
     * @Route("/create", name="create", methods={"POST"})
     */
