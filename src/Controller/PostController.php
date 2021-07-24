@@ -2,20 +2,21 @@
 
 namespace App\Controller;
 
+use App\ClassFile\CheckUserOwner;
 use App\Entity\Post;
-use App\Entity\User;
+
 use App\Form\CommentType;
 use App\Form\PostFormType;
 use App\Traits\RedirectMain;
 use App\Repository\PostRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 
 
 /**
@@ -32,6 +33,8 @@ class PostController extends AbstractController
     */
     public function test(Post $post)
     {   
+
+        
         if($post == null){
             throw 'No POST FOUND';
         }
@@ -50,6 +53,22 @@ class PostController extends AbstractController
             $id = $request->get('id');
 
             $post = $postRepo->find($request->get('id'));
+
+            /** 
+             *  ADDING CHECKPOINT IF USER IS THE AUTHOR OF THE POST
+             *  OTHERWISE REDIRECT TO MAIN PAGE.
+             * */
+           
+            if( CheckUserOwner::CheckOwnerShip($post,$this->getUser()->getName()) ){
+                $this->addFlash(
+                    'notice',
+                    'Cannot edit this post because you are not the author.'
+                );
+    
+                return $this->redirectToRoute('index');
+            }
+
+
             $comments =  $post->getComments();
             
             $form = $this->createForm(
@@ -170,6 +189,16 @@ class PostController extends AbstractController
         // PostRepository $postRepo
         // $post = $postRepo->find($id);
 
+
+        if( CheckUserOwner::CheckOwnerShip($post,$this->getUser()->getName()) ){
+            $this->addFlash(
+                'notice',
+                'Cannot edit this post because you are not the author.'
+            );
+
+            return $this->redirectToRoute('index');
+        }
+
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(
             PostFormType::class,
@@ -211,6 +240,15 @@ class PostController extends AbstractController
       
         if($post != null){
 
+
+            if( CheckUserOwner::CheckOwnerShip($post,$this->getUser()->getName()) ){
+                $this->addFlash(
+                    'notice',
+                    'Cannot delete this post because you are not the author.'
+                );
+    
+                return $this->redirectToRoute('index');
+            }
             $em->remove( $post );
 
             $em->flush();
