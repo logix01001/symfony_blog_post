@@ -23,6 +23,8 @@ class PagesController extends AbstractController
         //get total pages
         $pagesCount = ceil($postsRepo->getTotalRecord() /  $pageSize);
 
+
+    
        
         return $this->render('pages/index.html.twig', [
             'controller_name' => 'PagesController',
