@@ -28,17 +28,17 @@ class PostController extends AbstractController
     use RedirectMain;
 
     /**
-    * @Route("/test/{id}", name="test")
+    * @Route("/test/{id}", name="test", methods={"GET"})
     * 
     */
     public function test(Post $post)
     {   
-
+        
         
         if($post == null){
             throw 'No POST FOUND';
         }
-        return dd($post);
+        return $post->getTags();
     }
 
     /**
@@ -70,6 +70,8 @@ class PostController extends AbstractController
 
 
             $comments =  $post->getComments();
+
+            $tags =  $post->getTags();
             
             $form = $this->createForm(
                 PostFormType::class,
@@ -85,7 +87,8 @@ class PostController extends AbstractController
                 'controller_name' => 'PostController',
                 'form' => $form->createView(),
                 'post' => $post,
-                'comments' => $comments
+                'comments' => $comments,
+                'tags' => $tags,
             ]);
 
 
@@ -125,6 +128,8 @@ class PostController extends AbstractController
 
             $comments = $post->getComments();
 
+            $tags =  $post->getTags();
+
             $commentform = $this->createForm(
                 CommentType::class,
                 null,
@@ -137,7 +142,8 @@ class PostController extends AbstractController
             [
                 'post' => $post,
                 'comments' => $comments,
-                'commentform' => $commentform->createView()
+                'commentform' => $commentform->createView(),
+                'tags' => $tags
             ]);
         }
         

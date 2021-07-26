@@ -7,7 +7,11 @@
         <h2>{{ post.getTitle }}</h2>
           <small>{{ post.getUser().getName() }}</small>
         <h5><i class="fa fa-calendar-alt"></i> {{ post.getCreatedAt() | date('Y-m-d g:i a') }}</h5>
-      
+        {% if tags is defined %}
+            {% for tag in tags %}
+                <span class="badge bg-info text-dark"><i class="fa fa-tag"></i> {{ tag.getName() }}</span>
+            {% endfor %}
+        {% endif %}     
         <hr>
         <div class="form_group">
             <div class="col-md-12 mb-3">
@@ -49,6 +53,9 @@
             </div>
         </div> 
         {% endif %}     
+
+
+       
     </div>
     
 {% endblock %}
